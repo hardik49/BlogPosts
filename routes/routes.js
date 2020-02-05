@@ -4,4 +4,7 @@ const UsersController = require('../controller/UsersController')
 
 router.post('/user', UsersController.register);
 
-module.exports = router; 
+router.post('/verify', UsersController.authenticate);
+
+
+module.exports = router;  
