@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const userAuth = require('../model/UserModel');
+
 function message(statusCode, status, msg, data = '') {
   let obj = {
     statusCode: statusCode,
