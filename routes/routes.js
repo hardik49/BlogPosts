@@ -6,5 +6,4 @@ router.post('/user', UsersController.register);
 
 router.post('/verify', UsersController.authenticate);
 
-
 module.exports = router;  

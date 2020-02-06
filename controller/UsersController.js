@@ -38,4 +38,4 @@ async function authenticate(req, res) {
   }
 }
 
-module.exports = { register, authenticate }
+module.exports = { register, authenticate, message }

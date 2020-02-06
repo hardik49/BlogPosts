@@ -5,6 +5,7 @@ function validateToken(req, res, next) {
   if (typeof bodyHeader !== undefined) {
     jwt.verify(bodyHeader, process.env.SECRET_KEY, (err, decoded) => {
       if (err) res.json({message: 'Invalid Token'});
+      req.user = decoded.isUser._id;
       next();
     });
   } else {
