@@ -9,10 +9,32 @@ async function addPost(req, res) {
 
   try {
     const addPost = await post.save();
-    res.send(message(200,'OK', 'post generated successfully!',addPost));
+    res.send(message(200, 'OK', 'Post Created..!', addPost));
   } catch (err) {
     res.sendStatus(500).send(err);
   }
 }
 
-module.exports = { addPost }
+async function getPostByUser(req, res) {
+  if (req.userStatus == 1) {
+    try {
+      const getPost = await postModel.find({});
+      if (getPost !== null) {
+        res.send(message(200, 'OK', 'post found!', getPost));
+      }
+    } catch (err) {
+      res.sendStatus(500).send(message(400, 'bad request', 'No post found!', getPost));
+    }
+  } else {
+    try {
+      const getPost = await postModel.find({ userId: req.user });
+      if (getPost !== null) {
+        res.send(message(200, 'OK', 'post found!', getPost));
+      }
+    } catch (err) {
+      res.sendStatus(500).send(message(400, 'bad request', 'No post found!', getPost));
+    }
+  }
+}
+
+module.exports = { addPost, getPostByUser }

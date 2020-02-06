@@ -16,7 +16,7 @@ async function register(req, res) {
   const user = new userAuth(req.body);
   try {
     const addUser = await user.save();
-    res.send(message(200, 'OK', 'User registered successfully!'));
+    res.send(message(200, 'OK', 'User registered successfully!', addUser));
   } catch (err) {
     res.sendStatus(500).send(err);
   }
@@ -29,13 +29,14 @@ async function authenticate(req, res) {
     const isUser = await userAuth.findOne({ email: email, password: password }, { password: 0 });
     console.log(isUser);
     if (isUser != null) {
-      jwt.sign({isUser}, process.env.SECRET_KEY, function (err, token) {
+      jwt.sign({ isUser }, process.env.SECRET_KEY, (err, token) => {
         res.json(message(200, 'OK', 'Token generated..', token))
       });
+    } else {
+      res.json(message(400, 'bad request', 'User does not exists!'))
     }
   } catch (err) {
-    console.log('in catch');
-    res.json(message(400, 'bad request', 'User does not exists!'))
+    res.send(err);
   }
 }
 

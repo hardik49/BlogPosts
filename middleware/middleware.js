@@ -4,8 +4,9 @@ function validateToken(req, res, next) {
   const bodyHeader = req.headers['authorization'];
   if (typeof bodyHeader !== undefined) {
     jwt.verify(bodyHeader, process.env.SECRET_KEY, (err, decoded) => {
-      if (err) res.json({message: 'Invalid Token'});
+      if (err) res.json({ message: 'Invalid Token' });
       req.user = decoded.isUser._id;
+      req.userStatus = decoded.isUser.userStatus;
       next();
     });
   } else {
@@ -13,4 +14,4 @@ function validateToken(req, res, next) {
   }
 }
 
-module.exports = {validateToken}
+module.exports = { validateToken }
