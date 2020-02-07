@@ -6,8 +6,10 @@ const PostsController = require('../controller/PostsController');
 
 router.post('/user', UsersController.register);
 
-router.post('/verify', UsersController.authenticate);
+router.post('/login', UsersController.authenticate);
 
 router.get('/posts', middleware.validateToken, PostsController.getPostByUser);
+
+router.get('/login', UsersController.loginView);
 
 module.exports = router;  
