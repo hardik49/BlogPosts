@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser'); 
 require('dotenv').config();
 
 const routes = require('./routes/routes');
@@ -11,6 +12,7 @@ const port = process.env.PORT || 5000;
 const app = express();
 
 // app.use(express.json());
+app.use(cookieParser());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({
   extended: false
@@ -27,7 +29,6 @@ mongoose.connect(process.env.MONGO_URL, {
 
 app.use(routes);
 app.use('/user', userRoutes);
-
 
 app.listen(port, () => {
   console.log(`Server started at https://localhost:${port}`);

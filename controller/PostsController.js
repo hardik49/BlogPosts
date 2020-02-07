@@ -37,4 +37,8 @@ async function getPostByUser(req, res) {
   }
 }
 
-module.exports = { addPost, getPostByUser }
+function addPostView(req, res) {
+  res.render('add-post');
+}
+
+module.exports = { addPost, getPostByUser, addPostView }

@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 const userAuth = require('../model/UserModel');
-const tokens = [];
+
 function message(statusCode, status, msg, data = '') {
   let obj = {
     statusCode: statusCode,
@@ -10,6 +10,15 @@ function message(statusCode, status, msg, data = '') {
     data: data
   }
   return obj;
+}
+
+function validateCookie(req, res, token, isUser) {
+  if (req.cookies.token === undefined) {
+    res.cookie('token', token, { httpOnly: true, maxAge: 30000 })
+      .redirect('/user/post');
+  } else {
+    res.send(message(400, 'bad request', 'You are already been logged in..', token));
+  }
 }
 
 async function register(req, res) {
@@ -22,7 +31,6 @@ async function register(req, res) {
   }
 }
 
-
 async function authenticate(req, res) {
   const email = req.body.email;
   const password = req.body.password;
@@ -31,10 +39,10 @@ async function authenticate(req, res) {
     const isUser = await userAuth.findOne({ email: email, password: password }, { password: 0 });
     if (isUser != null) {
       jwt.sign({ isUser }, process.env.SECRET_KEY, (err, token) => {
-        res.json(message(200, 'OK', 'Token generated..', token))
+        validateCookie(req, res, token, isUser);
       });
     } else {
-      res.json(message(400, 'bad request', 'User does not exists!'))
+      res.json(message(400, 'bad request', 'User does not exists!'));
     }
   } catch (err) {
     res.send(err);
@@ -44,4 +52,4 @@ async function authenticate(req, res) {
 function loginView(req, res) {
   res.render('login');
 };
-module.exports = { register, authenticate, message, loginView }
+module.exports = { register, authenticate, message, loginView, validateCookie }
