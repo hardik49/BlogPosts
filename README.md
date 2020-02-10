@@ -1,6 +1,6 @@
-#BLOGGING
+# BLOGGING
 
-##Cloning Project 
+## Cloning Project 
 -----------------
 ```git
 git clone https://github.com/tushahirpara11/blog-api
@@ -12,13 +12,13 @@ git clone https://github.com/tushahirpara11/blog-api
 npm i
 ```
 
-##To run project
+## To run project
 ------------------
 ```node
 node index.js
 ```
 
-##Environment Setup
+## Environment Setup
 -----------------
 ```node
 MONGO_URL = 'mongodb://localhost/example'
