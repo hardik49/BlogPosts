@@ -11,3 +11,7 @@ npm i
 To run project
 ------------------
 node app.js
+
+
+To test project
+-----------------
