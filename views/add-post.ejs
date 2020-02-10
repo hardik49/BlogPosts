@@ -14,10 +14,9 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="style.css" type="text/css">
+  <link rel="stylesheet" href="css/style.css" type="text/css">
   <title>Login</title>
 </head>
-
 <body>
   <%- include ('navbar.ejs')  %>
   <div class="container margin-30">
@@ -26,16 +25,16 @@
       <div>
         <h1 style="text-align: center;">ADD POSTS</h1><hr><br>
         <div class="form-group col-lg-4 margin-30">
-          <label>Title</label> 
+          <label>Title</label>
         </div>
         <div class="form-group col-lg-8 margin-30">
-          <input type="text" name="title" class="form-control"  />
+          <input required type="text" name="title" class="form-control"  />
         </div>
         <div class="form-group col-lg-4">
           <label >content</label>
         </div>
         <div class="form-group col-lg-8">
-          <textarea name="content"  cols="77" rows="10"></textarea>
+          <textarea required name="content"  cols="77" rows="10"></textarea>
         </div>
         <div class="form-group" >
           <input  class="btn btn-success col-lg-4" value="ADD"  type="submit" style="margin:2% 0  2% 0;" />
@@ -45,5 +44,4 @@
     </form>
   </div>
 </body>
-
 </html>
