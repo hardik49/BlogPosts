@@ -1,8 +1,25 @@
 # BLOGGING
 
+## Pre-requirements 
+Below are the requirements need to be installed before you started.
+1) Node version v12.14.0
+2) MongoDb v4.2.2
+
 ## Cloning Project 
 ```git
-git clone https://github.com/tushahirpara11/blog-api
+git clone https://github.com/hardik49/BlogPosts
+```
+
+## Shift to project directory
+```bash
+cd BlogPosts
+```
+
+## Construct new .env and configure the following
+```node
+MONGO_URL = 'mongodb://localhost/"database name"'
+SECRET_KEY = "secret key"
+PORT = Any of unused port number
 ```
 
 ## Install Modules
@@ -10,17 +27,15 @@ git clone https://github.com/tushahirpara11/blog-api
 npm i
 ```
 
-## To run project
+## Start mongo server
+```node
+service mongod start
+```
+
+## To Run project
 ```node
 node index.js
 ```
 
-## Environment Setup
-```node
-MONGO_URL = 'mongodb://localhost/example'
-SECRET_KEY = "s!d@.1/ksk"
-PORT = 5000
-```
 
-- One can right it in .env in order to run the project.
 
