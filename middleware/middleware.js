@@ -1,12 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-const { message } = require('../controller/UsersController')
-
 function validateToken(req, res, next) {
   const bodyHeader = req.cookies.token;
   if (typeof bodyHeader !== 'undefined') {
     jwt.verify(bodyHeader, process.env.SECRET_KEY, (err, decoded) => {
-      if (err) res.json({ message: 'Invalid Token' });
+      if (err) {
+        console.log('1');
+        res.redirect('/user/login?error=denied');
+      }
       req.user = {
         id: decoded.isUser._id,
         userStatus: decoded.isUser.userStatus,
@@ -15,7 +16,7 @@ function validateToken(req, res, next) {
       next();
     });
   } else {
-    res.send(message(401, 'Unauthorized', 'Unauthorized Access'));
+    res.redirect('/user/login?error=denied');
   }
 }
 

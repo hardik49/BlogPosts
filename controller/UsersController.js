@@ -31,7 +31,7 @@ async function register(req, res) {
   const user = new userAuth(userObj);
   try {
     await user.save();
-    res.send(message(200, 'OK', 'User registered successfully!'));
+    res.redirect('/user/login?status=true');
   } catch (err) {
     res.sendStatus(500).send(err);
   }
@@ -48,7 +48,7 @@ async function authenticate(req, res) {
         validateCookie(req, res, token, isUser);
       });
     } else {
-      res.json(message(400, 'bad request', 'User does not exists!'));
+      res.redirect('/user/login?status=true');
     }
   } catch (err) {
     res.send(err);
@@ -60,7 +60,7 @@ function indexView(req, res) {
 }
 
 function loginView(req, res) {
-  res.render('login', { email: req.user });
+  res.render('login', { email: req.user, error: req.query.error, register: req.query.status });
 }
 
 function addUserView(req, res) {

@@ -1,4 +1,3 @@
-const jwt = require('jsonwebtoken');
 const moment = require('moment');
 
 const postModel = require('../model/PostModel');
