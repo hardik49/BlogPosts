@@ -36,6 +36,3 @@ service mongod start
 ```node
 node index.js
 ```
-
-
-
