@@ -8,10 +8,12 @@ async function addPost(req, res) {
   post.userId = req.user.id;
   post.createdAt = moment().format('DD-MM-YYYY');
   try {
-    const addPost = await post.save();
-    res.send(message(200, 'OK', 'Post Created..!', addPost));
+    await post.save();
+    req.flash('addedPost','Post Created..!');
+    res.redirect('/posts/user');
   } catch (err) {
-    res.sendStatus(500).send(err);
+    req.flash('loginRequired', 'login required');
+    res.redirect('/user/login');
   }
 }
 
@@ -20,7 +22,7 @@ async function getPostByUser(req, res) {
     try {
       const getPost = await postModel.find({});
       if (getPost !== null) {
-        res.render('view-post', { email: req.user, posts: getPost });
+        res.render('view-post', { email: req.user, posts: getPost, isAdded:req.flash('addedPost') });
       }
     } catch (err) {
       res.sendStatus(500).send(message(400, 'bad request', 'No post found!', getPost));
@@ -29,7 +31,7 @@ async function getPostByUser(req, res) {
     try {
       const getPost = await postModel.find({ userId: req.user.id });
       if (getPost !== null) {
-        res.render('view-post', { email: req.user, posts: getPost });
+        res.render('view-post', { email: req.user, posts: getPost, isAdded:req.flash('addedPost') });
       }
     } catch (err) {
       res.sendStatus(500).send(message(400, 'bad request', 'No post found!', getPost));

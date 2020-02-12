@@ -1,8 +1,7 @@
 const jwt = require('jsonwebtoken');
-const flash = require('express-flash-notification');
+const bcrypt = require('bcrypt');
 
 const userAuth = require('../model/UserModel');
-
 function message(statusCode, status, msg, data = '') {
   let obj = {
     statusCode: statusCode,
@@ -18,41 +17,43 @@ function validateCookie(req, res, token) {
     res.cookie('token', token, { httpOnly: true, maxAge: 90000 })
       .redirect('/user/post');
   } else {
-    res.send(message(400, 'bad request', 'You are already been logged in..', token));
+    res.send(message(400, 'bad request', 'You are already been logged in..'));
   }
 }
 
 async function register(req, res) {
-  const userObj = {
-    "name": req.body.name,
-    "email": req.body.email,
-    "password": req.body.password
-  }
-  const user = new userAuth(userObj);
+  req.body.password = bcrypt.hashSync(req.body.password, 10);
+  const user = new userAuth(req.body);
   try {
     await user.save();
-    res.redirect('/user/login?status=true');
+    req.flash('register', 'User registered successfully!');
+    res.redirect('/user/login');
   } catch (err) {
     res.sendStatus(500).send(err);
   }
 }
 
-async function authenticate(req, res) {
-  const email = req.body.email;
-  const password = req.body.password;
-  try {
-    const isUser = await userAuth.findOne({ email: email, password: password },
-      { password: 0 });
-    if (isUser != null) {
-      jwt.sign({ isUser }, process.env.SECRET_KEY, (err, token) => {
-        validateCookie(req, res, token, isUser);
+function authenticate(req, res) {
+  new Promise((resolve, reject) => {
+    userAuth.findOne({ email: req.body.email }, function (err, data) {
+      if (err) {
+        return reject(new Error(err));
+      } else {
+        return resolve(data);
+      }
+    });
+  }).then(function (data) {
+    if (bcrypt.compareSync(req.body.password, data.password)) {
+      jwt.sign({ data }, process.env.SECRET_KEY, (err, token) => {
+        validateCookie(req, res, token);
       });
     } else {
-      res.redirect('/user/login?status=true');
+      req.flash('error', 'Please enter valid credentials..!')
+      res.redirect('/user/login');
     }
-  } catch (err) {
-    res.send(err);
-  }
+  }).catch(function (err) {
+    throw err;
+  });
 }
 
 function indexView(req, res) {
@@ -60,7 +61,11 @@ function indexView(req, res) {
 }
 
 function loginView(req, res) {
-  res.render('login', { email: req.user, error: req.query.error, register: req.query.status });
+  if (req.cookies.token) {
+    res.redirect('/');
+  } else {
+    res.render('login', { email: req.user, message: req.flash('error'), register: req.flash('register') });
+  }
 }
 
 function addUserView(req, res) {

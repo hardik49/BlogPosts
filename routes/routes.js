@@ -4,7 +4,7 @@ const middleware = require('../middleware/middleware')
 const UsersController = require('../controller/UsersController')
 const PostsController = require('../controller/PostsController');
 
-router.get('/', UsersController.indexView)
+router.get('/',middleware.validateToken, UsersController.indexView)
 
 router.get('/user/register', UsersController.addUserView);
 
