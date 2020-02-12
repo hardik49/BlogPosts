@@ -5,19 +5,21 @@ function validateToken(req, res, next) {
   if (typeof bodyHeader !== 'undefined') {
     jwt.verify(bodyHeader, process.env.SECRET_KEY, (err, decoded) => {
       if (err) {
-        console.log('1');
-        res.redirect('/user/login?error=denied');
+        res.redirect('/user/login');
       }
       req.user = {
-        id: decoded.isUser._id,
-        userStatus: decoded.isUser.userStatus,
-        email: decoded.isUser.email
+        id: decoded.data._id,
+        userStatus: decoded.data.userStatus,
+        email: decoded.data.email
       }
       next();
     });
   } else {
-    res.redirect('/user/login?error=denied');
+    req.flash('error','Login is required..!');
+    res.redirect('/user/login');
   }
 }
+
+
 
 module.exports = { validateToken }

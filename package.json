@@ -9,16 +9,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.8",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.2.0",
     "ejs": "^3.0.1",
     "express": "^4.17.1",
-    "express-flash-notification": "^0.5.0",
+    "express-ejs-layouts": "^2.5.0",
     "express-session": "^1.17.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "mongoose": "^5.8.9",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "req-flash": "0.0.3"
   }
 }

@@ -12,8 +12,7 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    require: true,
-    maxlength: 15
+    require: true
   },
   userStatus: {
     type: Number,
