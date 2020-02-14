@@ -34,12 +34,22 @@ body {
 }
 
 .body-container {
-  height: 80%;
+  height: 65%;
   padding: 1.5%;
   font-family: monospace;
   font-size: 20px;
-  border-bottom: 1px solid black;
   overflow: scroll;
+}
+
+.body-footer {
+  height: 15%;
+  font-size: 25px;
+  padding: .4% 0 0.3 2%;
+  color: grey;
+}
+
+.body-footer i:hover {
+  cursor: pointer;
 }
 
 #headerPost {

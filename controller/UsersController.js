@@ -2,70 +2,90 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const userAuth = require('../model/UserModel');
-function message(statusCode, status, msg, data = '') {
-  let obj = {
-    statusCode: statusCode,
-    status: status,
-    message: msg,
-    data: data
-  }
-  return obj;
-}
+const likeModel = require('../model/LikeModel');
+const { message } = require('../utilities/helper');
 
 function validateCookie(req, res, token) {
   if (req.cookies.token === undefined) {
-    res.cookie('token', token, { httpOnly: true, maxAge: 90000 })
-      .redirect('/user/post');
+    res.cookie('token', token, { httpOnly: true, maxAge: 110000 }).redirect('/user/post');
   } else {
-    res.send(message(400, 'bad request', 'You are already been logged in..'));
+    req.flash('message', 'You are already been logged in..')
+    res.redirect('/')
   }
 }
 
-async function register(req, res) {
+function register(req, res) {
   req.body.password = bcrypt.hashSync(req.body.password, 10);
   const user = new userAuth(req.body);
   try {
-    await user.save();
+    user.save();
     req.flash('register', 'User registered successfully!');
     res.redirect('/user/login');
   } catch (err) {
-    res.sendStatus(500).send(err);
+    res.send(message(400, 'Bad request', `Error while register user: ${err}`))
   }
 }
 
 function authenticate(req, res) {
-  new Promise((resolve, reject) => {
+  try {
     userAuth.findOne({ email: req.body.email }, function (err, data) {
-      if (err) {
-        return reject(new Error(err));
-      } else {
-        return resolve(data);
+      if (data) {
+        if (bcrypt.compareSync(req.body.password, data.password)) {
+          jwt.sign({ data }, process.env.SECRET_KEY, (err, token) => {
+            if (err) {
+              res.send(message(400, 'Bad request', `Error while signing token: ${err}`))
+            } else {
+              validateCookie(req, res, token);
+            }
+          });
+        } else {
+          req.flash('error', 'Please enter valid credentials..!')
+          res.redirect('/user/login');
+        }
       }
+
     });
-  }).then(function (data) {
-    if (bcrypt.compareSync(req.body.password, data.password)) {
-      jwt.sign({ data }, process.env.SECRET_KEY, (err, token) => {
-        validateCookie(req, res, token);
-      });
+  }
+  catch (err) {
+    res.send(message(400, 'Bad request', `Error while authenticating data: ${err}`))
+  }
+}
+
+async function likePost(req, res) {
+  try {
+    const isLikeExists = await likeModel.findOne({
+      postId: req.body.postId, userId: req.body.userId,
+      status: { $eq: 1 }
+    });
+    if (isLikeExists) {
+      try {
+        await likeModel.updateOne({ postId: req.body.postId, userId: req.body.userId },
+          { $set: { status: 0 } });
+      } catch (err) {
+        res.send(message(400, 'Bad request', `Error while unliking post: ${err}`))
+      }
     } else {
-      req.flash('error', 'Please enter valid credentials..!')
-      res.redirect('/user/login');
+      try {
+        await likeModel.updateOne({ postId: req.body.postId, userId: req.body.userId },
+          { $set: { status: 1 } },
+          { upsert: true }
+        );
+      } catch (err) {
+        res.send(message(400, 'Bad request', `Error while liking a post: ${err}`))
+      }
     }
-  }).catch(function (err) {
-    throw err;
-  });
+    res.redirect('/posts/user');
+  } catch (err) {
+    res.send(message(400, 'Bad request', `Error while founding like: ${err}`))
+  }
 }
 
 function indexView(req, res) {
-  res.render('index', { email: req.user });
+  res.render('index', { email: req.user, message: req.flash('message') });
 }
 
 function loginView(req, res) {
-  if (req.cookies.token) {
-    res.redirect('/');
-  } else {
-    res.render('login', { email: req.user, message: req.flash('error'), register: req.flash('register') });
-  }
+  res.render('login', { email: req.user, message: req.flash('error'), register: req.flash('register') });
 }
 
 function addUserView(req, res) {
@@ -78,5 +98,5 @@ function logout(req, res) {
 
 module.exports = {
   indexView, register, authenticate, message, loginView, validateCookie,
-  addUserView, logout
+  addUserView, logout, likePost
 }

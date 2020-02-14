@@ -1,19 +1,16 @@
-const moment = require('moment');
-
 const postModel = require('../model/PostModel');
-const { message } = require('./UsersController');
+const { message } = require('../utilities/helper');
+const likes = require('../model/LikeModel')
 
-async function addPost(req, res) {
+function addPost(req, res) {
   let post = new postModel(req.body);
   post.userId = req.user.id;
-  post.createdAt = moment().format('DD-MM-YYYY');
   try {
-    await post.save();
-    req.flash('addedPost','Post Created..!');
+    post.save();
+    req.flash('addedPost', 'Post Created..!');
     res.redirect('/posts/user');
   } catch (err) {
-    req.flash('loginRequired', 'login required');
-    res.redirect('/user/login');
+    res.sendStatus(500).send(err);
   }
 }
 
@@ -21,20 +18,40 @@ async function getPostByUser(req, res) {
   if (req.user.userStatus == 1) {
     try {
       const getPost = await postModel.find({});
-      if (getPost !== null) {
-        res.render('view-post', { email: req.user, posts: getPost, isAdded:req.flash('addedPost') });
+      try {
+        const like = await likes.find({});
+        if (getPost !== null) {
+          res.render('view-post', {
+            email: req.user, posts: getPost, isAdded: req.flash('addedPost'),
+            likes: like
+          });
+        } else {
+          res.send(message(400, 'bad request', 'No post found!', getPost));
+        }
+      } catch (err) {
+        res.sendStatus(500).send(err);
       }
     } catch (err) {
-      res.sendStatus(500).send(message(400, 'bad request', 'No post found!', getPost));
+      res.sendStatus(500).send(err);
     }
   } else {
     try {
       const getPost = await postModel.find({ userId: req.user.id });
-      if (getPost !== null) {
-        res.render('view-post', { email: req.user, posts: getPost, isAdded:req.flash('addedPost') });
+      try {
+        const like = await likes.find({});
+        if (getPost !== null) {
+          res.render('view-post', {
+            email: req.user, posts: getPost, isAdded: req.flash('addedPost'),
+            likes: like
+          });
+        } else {
+          res.send(message(400, 'bad request', 'No post found!', getPost));
+        }
+      } catch (err) {
+        res.sendStatus(500).send(err);
       }
     } catch (err) {
-      res.sendStatus(500).send(message(400, 'bad request', 'No post found!', getPost));
+      res.sendStatus(500).send(err);
     }
   }
 }
