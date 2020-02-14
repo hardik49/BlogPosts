@@ -4,7 +4,7 @@ const middleware = require('../middleware/middleware')
 const UsersController = require('../controller/UsersController')
 const PostsController = require('../controller/PostsController');
 
-router.get('/',middleware.validateToken, UsersController.indexView)
+router.get('/', middleware.validateToken, UsersController.indexView)
 
 router.get('/user/register', UsersController.addUserView);
 
@@ -19,6 +19,8 @@ router.get('/posts/user', middleware.validateToken, PostsController.getPostByUse
 router.get('/user/post', middleware.validateToken, PostsController.addPostView);
 
 router.post('/user/post', middleware.validateToken, PostsController.addPost);
+
+router.post('/user/like', middleware.validateToken, UsersController.likePost);
 
 router.get('/user/logout', UsersController.logout);
 
