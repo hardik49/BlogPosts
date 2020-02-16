@@ -7,7 +7,7 @@ const { message } = require('../utilities/helper');
 
 function validateCookie(req, res, token) {
   if (req.cookies.token === undefined) {
-    res.cookie('token', token, { httpOnly: true, maxAge: 110000 }).redirect('/user/post');
+    res.cookie('token', token, { httpOnly: true, maxAge: 210000 }).redirect('/user/post');
   } else {
     req.flash('message', 'You are already been logged in..')
     res.redirect('/')
@@ -43,7 +43,6 @@ function authenticate(req, res) {
           res.redirect('/user/login');
         }
       }
-
     });
   }
   catch (err) {

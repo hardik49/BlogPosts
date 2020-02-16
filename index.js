@@ -35,7 +35,13 @@ app.use(express.static(__dirname + '/public/'));
 mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-})
+}, function(err, val) {
+  if(err) {
+    console.log('Error: Database connection can not established..!');
+  } else {
+    console.log('database connection established...!')
+  }
+});
 
 app.use(routes);
 
