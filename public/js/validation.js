@@ -1,9 +1,11 @@
+
 $(document).ready(function () {
   $('#signup').submit(function (e) {
     const name = $('#name').val();
     const cpassword = $('#confirmPassword').val();
     const email = $('#email').val();
     const password = $('#password').val();
+    
     $(".error").remove();
 
     if (name.length < 1 || name == '') {
@@ -70,5 +72,6 @@ $(document).ready(function () {
         e.preventDefault();
         $('#postContent').after('<span class="error">Please enter post content</span>');
       }
-    })
+    })  
+    
 })

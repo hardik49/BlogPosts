@@ -52,28 +52,31 @@ function authenticate(req, res) {
 
 async function likePost(req, res) {
   try {
+    const likeObj = new likeModel(req.body);
     const isLikeExists = await likeModel.findOne({
-      postId: req.body.postId, userId: req.body.userId,
-      status: { $eq: 1 }
+      postId: req.body.postId, userId: req.body.userId
     });
     if (isLikeExists) {
       try {
-        await likeModel.updateOne({ postId: req.body.postId, userId: req.body.userId },
-          { $set: { status: 0 } });
+        await likeModel.findOneAndRemove({ postId: req.body.postId, userId: req.body.userId });
+        const obj = {
+          postId: req.body.postId,
+          userId: req.body.userId,
+          status: false
+        }
+        res.json(obj);
       } catch (err) {
         res.send(message(400, 'Bad request', `Error while unliking post: ${err}`))
       }
     } else {
       try {
-        await likeModel.updateOne({ postId: req.body.postId, userId: req.body.userId },
-          { $set: { status: 1 } },
-          { upsert: true }
-        );
+        likeObj.save();
+        res.json({ status: true });
       } catch (err) {
         res.send(message(400, 'Bad request', `Error while liking a post: ${err}`))
       }
     }
-    res.redirect('/posts/user');
+    // res.redirect('/posts/user');
   } catch (err) {
     res.send(message(400, 'Bad request', `Error while founding like: ${err}`))
   }

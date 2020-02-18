@@ -109,9 +109,10 @@ body {
   border: 1px solid grey;
   border-radius: 10px;
   width: 80%;
-  height: 80%;
+  height: 40rem;
   margin-top: 5%;
 }
+
 
 /* Button styles */
 .btn-center {
@@ -121,6 +122,14 @@ body {
 
 .btn-center > .btn {
   margin-right: 2%;
+}
+
+.btn-blue {
+  color: blue;
+}
+
+.btn-grey {
+  color: grey;
 }
 
 /* Script Styles */

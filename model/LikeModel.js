@@ -9,12 +9,6 @@ const likeSchema = new Schema({
   userId: {
     type: String,
     require: true
-  },
-  // Here 1 is already liked and 0 is disliked
-  status: {
-    type: Number,
-    default:1,
-    require: true
   }
 }, { versionKey: false })
 

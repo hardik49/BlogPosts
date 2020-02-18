@@ -1,12 +1,13 @@
 <div class="img-back">
-  <%if(message) {%>
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-    <strong>Invalid Access!</strong> <%= message%>
-  </div>
-  <%}%> <%if(register) {%>
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <strong>User Registered!</strong> <%=register%>
-  </div>
+  <% if(message) { %>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Invalid Access!</strong> <%= message%>
+    </div>
+  <% } %>
+  <% if(register) { %>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      <strong>User Registered!</strong> <%=register%>
+    </div>
   <%}%>
   <div class="col-lg-12">
     <div class="container">

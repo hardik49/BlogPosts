@@ -1,6 +1,6 @@
 const postModel = require('../model/PostModel');
-const { message } = require('../utilities/helper');
 const likes = require('../model/LikeModel')
+const { message } = require('../utilities/helper');
 
 function addPost(req, res) {
   let post = new postModel(req.body);
@@ -38,8 +38,9 @@ async function getPostByUser(req, res) {
     try {
       const getPost = await postModel.find({ userId: req.user.id });
       try {
-        const like = await likes.find({});
         if (getPost !== null) {
+          const like = await likes.find({});
+          
           res.render('view-post', {
             email: req.user, posts: getPost, isAdded: req.flash('addedPost'),
             likes: like
