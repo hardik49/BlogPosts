@@ -8,11 +8,11 @@ $(document).ready(function () {
     
     $(".error").remove();
 
-    if (!/[a-zA-Z-]/.test(String.fromCharCode(name)) || name.length < 1 || name == '') {
+    if (!/^[A-Za-z]/.test(name) || name == '') {
       e.preventDefault();
       $('#name').after('<span class="error">Please enter your name</span>');
     }
-    if (email.length < 1 || email == '') {
+    if (email.length == 0) {
       e.preventDefault();
       $('#email').after('<span class="error">Please enter email</span>');
     } else {
