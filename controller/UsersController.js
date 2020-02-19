@@ -7,7 +7,7 @@ const { message } = require('../utilities/helper');
 
 function validateCookie(req, res, token) {
   if (req.cookies.token === undefined) {
-    res.cookie('token', token, { httpOnly: true, maxAge: 110000 }).redirect('/user/post');
+    res.cookie('token', token, { httpOnly: true, maxAge: 210000 }).redirect('/user/post');
   } else {
     req.flash('message', 'You are already been logged in..')
     res.redirect('/')
@@ -43,7 +43,6 @@ function authenticate(req, res) {
           res.redirect('/user/login');
         }
       }
-
     });
   }
   catch (err) {
@@ -53,28 +52,30 @@ function authenticate(req, res) {
 
 async function likePost(req, res) {
   try {
+    const likeObj = new likeModel(req.body);
     const isLikeExists = await likeModel.findOne({
-      postId: req.body.postId, userId: req.body.userId,
-      status: { $eq: 1 }
+      postId: req.body.postId, userId: req.body.userId
     });
     if (isLikeExists) {
       try {
-        await likeModel.updateOne({ postId: req.body.postId, userId: req.body.userId },
-          { $set: { status: 0 } });
+        await likeModel.findOneAndDelete({ postId: req.body.postId, userId: req.body.userId });
+        const obj = {
+          postId: req.body.postId,
+          userId: req.body.userId,
+          status: false
+        }
+        res.json(obj);
       } catch (err) {
         res.send(message(400, 'Bad request', `Error while unliking post: ${err}`))
       }
     } else {
       try {
-        await likeModel.updateOne({ postId: req.body.postId, userId: req.body.userId },
-          { $set: { status: 1 } },
-          { upsert: true }
-        );
+        likeObj.save();
+        res.json({ status: true });
       } catch (err) {
         res.send(message(400, 'Bad request', `Error while liking a post: ${err}`))
       }
     }
-    res.redirect('/posts/user');
   } catch (err) {
     res.send(message(400, 'Bad request', `Error while founding like: ${err}`))
   }
@@ -85,7 +86,8 @@ function indexView(req, res) {
 }
 
 function loginView(req, res) {
-  res.render('login', { email: req.user, message: req.flash('error'), register: req.flash('register') });
+  res.render('login', { email: req.user, message: req.flash('error'),
+  register: req.flash('register') });
 }
 
 function addUserView(req, res) {

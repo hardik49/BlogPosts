@@ -1,4 +1,4 @@
-exports.message = function(statusCode, status, msg, data = '',res) {
+exports.message = function(statusCode, status, msg, data = '') {
   let obj = {
     statusCode: statusCode,
     status: status,

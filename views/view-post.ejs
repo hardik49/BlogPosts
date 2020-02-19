@@ -1,51 +1,83 @@
-<%if(isAdded) {%>
-<div class="alert alert-success fade show" role="alert">
-  <strong>New posts created!</strong> <%=isAdded%>
-</div>
-<%}%>
-<div id="headerPost">
-  <h4>All Posts</h4>
-</div>
-<% if(posts.length) {%> <% for(let i = 0; i < posts.length; i++) { %>
-<form method="POST" action="/user/like">
-  <div class="box-container">
-    <div class="head-container">
-      <input type="hidden" name="postId" value="<%=posts[i].id%>" />
-      <input type="hidden" name="userId" value="<%=email.id%>" />
-      <h4>
-        TITLE : <%=posts[i].title%>
-        <span id="createdAt"
-          ><em>Published At: <%= posts[i].createdAt%></em></span
-        >
-      </h4>
+<div class="body-scrollable">
+  <%if(isAdded) {%>
+    <div class="alert alert-success fade show" role="alert">
+      <strong>New posts created!</strong> <%=isAdded%>
     </div>
-    <div class="body-container">
-      <p><%=posts[i].content%></p>
+  <%}%>
+    <div id="headerPost">
+      <h4><i class="fa fa-book"></i> All Posts</h4>
     </div>
-    <div class="body-footer">
-      <%if(likes.length) { let flag =false; likes.some((ele) => { if(ele.postId
-      == posts[i]._id && ele.userId == email.id && ele.status == 1) {
-      flag=true; } }); if(flag) { %>
-      <button id="btnLike" style="background-color: red;" type="submit">
-        Like <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-      </button>
-      <% } else { %>
-      <button id="btnLike" style="background-color: blue;" type="submit">
-        Like <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-      </button>
-      <% } %> <%} else {%>
-      <button id="btnLike" style="background-color: blue;" type="submit">
-        Like <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
-      </button>
-      <% } %>
+  <% if(posts.length){ %> 
+  
+    <% for(let i = 0; i < posts.length; i++) { %>
+      <form id="viewPosts">
+        <div class="box-container">
+          <div class="head-container">
+            <input type="hidden" name="postId" id="postId<%=posts[i]._id%>" value="<%=posts[i].id%>" />
+            <input type="hidden" name="userId" id="userId" value="<%=email.id%>" />
+            <h4> Title : <%=posts[i].title%>
+              <span class="postDetails">
+                <em>Published At: <%= posts[i].createdAt%></em>
+              </span>
+            </h4>
+          </div>
+
+          <div class="body-container">
+            <p><%= posts[i].content %></p>
+          </div>
+
+          <div class="body-footer">
+            <% if(likes.length) {
+              let flag =false;
+              likes.some((ele) => {
+                if(ele.postId == posts[i]._id && ele.userId == email.id) {
+                  flag=true;
+                }
+              }); %>
+              
+              <% if(flag) { %>
+
+                <button id="<%= posts[i]._id %>" name="like" class="btn-blue" type="submit">
+                  <i class="fa fa-thumbs-up" aria-hidden="true"></i>                  
+                </button>
+                
+                  <% if (countlike[i].likeCount !== undefined) { %>
+                    <span id="count_<%= posts[i].id%>"><%= countlike[i].likeCount%></span>
+                  <% } %>
+                  
+              <% } else { %>
+
+                <button id="<%= posts[i]._id %>" name="unlike" class="btn-grey" type="submit">
+                <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+                </button>
+                
+                <% if (countlike[i].likeCount !== undefined) { %>
+                    <span id="count_<%= posts[i].id%>"><%= countlike[i].likeCount%></span>
+                  <% } else { %>                  
+                    <span id="count_<%= posts[i].id%>">0</span>
+                  <% } %>
+              <% } %>            
+            <% } else { %>
+              <button id="<%= posts[i]._id %>" name="unlike" class="btn-grey" type="submit">
+              <i class="fa fa-thumbs-up" aria-hidden="true"></i>
+              </button>
+              <span id="count_<%= posts[i].id%>">0</span>
+            <% } %>
+          </div>
+        </div>
+      </form>
+    <% } %>
+
+  <% } else { %>
+
+    <div class="box-container">
+      <h1 style="text-align: center; padding-top:7%;">
+        Sorry! No post available.
+      </h1>
+      <h5 style="text-align: center;">
+        To publish new post <a href="/user/post">Click here..</a>
+      </h5>
     </div>
-  </div>
-</form>
-<% } %> <% } else { %>
-<div class="box-container">
-  <h1 style="text-align: center; padding-top:7%;">Sorry! No post available.</h1>
-  <h5 style="text-align: center;">
-    To publish new post <a href="/user/post">Click here..</a>
-  </h5>
+
+  <% } %>
 </div>
-<% } %>
