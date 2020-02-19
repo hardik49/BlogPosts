@@ -8,7 +8,7 @@ $(document).ready(function () {
     
     $(".error").remove();
 
-    if (name.length < 1 || name == '') {
+    if (!/[a-zA-Z-]/.test(String.fromCharCode(name)) || name.length < 1 || name == '') {
       e.preventDefault();
       $('#name').after('<span class="error">Please enter your name</span>');
     }
