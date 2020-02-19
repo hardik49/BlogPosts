@@ -8,7 +8,7 @@
       <h4><i class="fa fa-book"></i> All Posts</h4>
     </div>
   <% if(posts.length){ %> 
-    
+  
     <% for(let i = 0; i < posts.length; i++) { %>
       <form id="viewPosts">
         <div class="box-container">
@@ -34,26 +34,34 @@
                   flag=true;
                 }
               }); %>
-            
+              
               <% if(flag) { %>
 
                 <button id="<%= posts[i]._id %>" name="like" class="btn-blue" type="submit">
                   <i class="fa fa-thumbs-up" aria-hidden="true"></i>                  
                 </button>
-
+                
+                  <% if (countlike[i].likeCount !== undefined) { %>
+                    <span id="count_<%= posts[i].id%>"><%= countlike[i].likeCount%></span>
+                  <% } %>
+                  
               <% } else { %>
 
                 <button id="<%= posts[i]._id %>" name="unlike" class="btn-grey" type="submit">
                 <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                 </button>
-              <% } %>
-            
+                
+                <% if (countlike[i].likeCount !== undefined) { %>
+                    <span id="count_<%= posts[i].id%>"><%= countlike[i].likeCount%></span>
+                  <% } else { %>                  
+                    <span id="count_<%= posts[i].id%>">0</span>
+                  <% } %>
+              <% } %>            
             <% } else { %>
-
               <button id="<%= posts[i]._id %>" name="unlike" class="btn-grey" type="submit">
               <i class="fa fa-thumbs-up" aria-hidden="true"></i>
               </button>
-
+              <span id="count_<%= posts[i].id%>">0</span>
             <% } %>
           </div>
         </div>
@@ -66,7 +74,6 @@
       <h1 style="text-align: center; padding-top:7%;">
         Sorry! No post available.
       </h1>
-
       <h5 style="text-align: center;">
         To publish new post <a href="/user/post">Click here..</a>
       </h5>

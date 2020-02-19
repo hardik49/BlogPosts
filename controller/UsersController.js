@@ -58,7 +58,7 @@ async function likePost(req, res) {
     });
     if (isLikeExists) {
       try {
-        await likeModel.findOneAndRemove({ postId: req.body.postId, userId: req.body.userId });
+        await likeModel.findOneAndDelete({ postId: req.body.postId, userId: req.body.userId });
         const obj = {
           postId: req.body.postId,
           userId: req.body.userId,
@@ -76,7 +76,6 @@ async function likePost(req, res) {
         res.send(message(400, 'Bad request', `Error while liking a post: ${err}`))
       }
     }
-    // res.redirect('/posts/user');
   } catch (err) {
     res.send(message(400, 'Bad request', `Error while founding like: ${err}`))
   }
@@ -87,7 +86,8 @@ function indexView(req, res) {
 }
 
 function loginView(req, res) {
-  res.render('login', { email: req.user, message: req.flash('error'), register: req.flash('register') });
+  res.render('login', { email: req.user, message: req.flash('error'),
+  register: req.flash('register') });
 }
 
 function addUserView(req, res) {
